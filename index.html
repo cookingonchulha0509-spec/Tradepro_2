@@ -1,0 +1,1377 @@
+<!-- START OF FILE index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Trade Pro - Premium</title>
+    
+    <!-- Fonts: Space Grotesk (Tech/Crypto) & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons: FontAwesome 6 Pro Style -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            /* --- DARK THEME (DEFAULTS) --- */
+            --bg-body: #000000;
+            --glass-panel: rgba(20, 20, 20, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            
+            /* NEON ACCENTS */
+            --neon-blue: #2962ff;
+            --neon-cyan: #00e5ff;
+            --neon-purple: #7c4dff;
+            --neon-green: #00e676;
+            --neon-red: #ff1744;
+            
+            /* GRADIENTS */
+            --grad-primary: linear-gradient(135deg, #2962ff 0%, #00e5ff 100%);
+            --grad-success: linear-gradient(135deg, #00c853 0%, #69f0ae 100%);
+            --grad-danger: linear-gradient(135deg, #d50000 0%, #ff5252 100%);
+            --grad-gold: linear-gradient(135deg, #ff6f00 0%, #ffca28 100%);
+            
+            /* TEXT */
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            
+            /* GLOWS */
+            --glow-blue: 0 0 20px rgba(41, 98, 255, 0.4);
+            --glow-green: 0 0 20px rgba(0, 230, 118, 0.3);
+            --glow-red: 0 0 20px rgba(255, 23, 68, 0.3);
+
+            /* LAYOUT & BUTTONS */
+            --btn-radius: 18px;
+            --btn-spacing: 16px;
+            --card-padding: 20px;
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        /* --- ⚪ PREMIUM LIGHT MODE OVERRIDES ⚪ --- */
+        body.light-mode {
+            --bg-body: #f4f6f8; /* Very soft grey-white for depth */
+            --glass-panel: #ffffff; /* Pure White Cards */
+            --glass-border: #eef0f2; /* Almost invisible border */
+            
+            /* Solid Colors for Light Mode */
+            --neon-blue: #0052ff;
+            --neon-cyan: #007aff;
+            --neon-green: #00b36b;
+            --neon-red: #e60023;
+            
+            /* Softer Gradients */
+            --grad-primary: linear-gradient(135deg, #0052ff 0%, #007aff 100%);
+            --grad-success: linear-gradient(135deg, #00b36b 0%, #00d68f 100%);
+            --grad-danger: linear-gradient(135deg, #e60023 0%, #ff4d4d 100%);
+            
+            /* High Contrast Text */
+            --text-main: #111111; /* Sharp Black */
+            --text-muted: #666666;
+            
+            /* Shadows (Apple Style) */
+            --glow-blue: 0 8px 20px rgba(0, 82, 255, 0.25);
+            --glow-green: 0 8px 20px rgba(0, 179, 107, 0.25);
+            --glow-red: 0 8px 20px rgba(230, 0, 35, 0.25);
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05); /* Soft drop shadow */
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; 
+            padding-bottom: 90px;
+            /* Mesh Gradient only for Dark Mode */
+            background-image: radial-gradient(circle at 10% 20%, rgba(41, 98, 255, 0.08) 0%, transparent 40%),
+                              radial-gradient(circle at 90% 80%, rgba(124, 77, 255, 0.08) 0%, transparent 40%);
+            background-attachment: fixed;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        
+        body.light-mode { background-image: none; }
+
+        /* TYPOGRAPHY */
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; font-weight: 700; letter-spacing: -0.5px; }
+        small { font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-muted); }
+
+        /* UTILS */
+        .hidden { display: none !important; }
+        .flex { display: flex; align-items: center; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Dynamic Colors */
+        .green { color: var(--neon-green) !important; text-shadow: none; }
+        .red { color: var(--neon-red) !important; text-shadow: none; }
+        
+        /* CARDS */
+        .glass-card, .share-card {
+            background: var(--glass-panel);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            padding: var(--card-padding);
+        }
+        
+        /* Light Mode Specific: Remove blur for cleaner look */
+        body.light-mode .glass-card, 
+        body.light-mode .share-card {
+            backdrop-filter: none;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        /* --- BUTTONS (UNIFIED) --- */
+        .btn { 
+            border: none; 
+            padding: 16px 20px;
+            border-radius: var(--btn-radius); 
+            font-weight: 600; cursor: pointer; width: 100%; 
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            font-family: 'Space Grotesk', sans-serif;
+            position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            margin-bottom: var(--btn-spacing);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-size: 15px;
+        }
+        
+        .btn:active { transform: scale(0.97); }
+        
+        .btn-primary { 
+            background: var(--grad-primary); 
+            color: white; 
+            box-shadow: var(--glow-blue);
+        }
+        
+        .btn-outline { 
+            background: transparent; 
+            border: 1px solid var(--glass-border); 
+            color: var(--text-main); 
+        }
+        body.light-mode .btn-outline {
+            border-color: #d1d1d1;
+            color: #1a1a1a;
+        }
+
+        /* INPUTS */
+        input {
+            width: 100%; padding: 16px; margin-bottom: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px; color: var(--text-main);
+            transition: 0.3s; font-size: 15px;
+        }
+        body.light-mode input {
+            background: #ffffff;
+            border: 2px solid #eef0f2;
+            color: #111;
+        }
+        input:focus { 
+            border-color: var(--neon-blue); 
+            background: rgba(41, 98, 255, 0.05);
+            box-shadow: 0 0 0 2px rgba(41, 98, 255, 0.2);
+        }
+
+        /* --- AUTH SCREEN --- */
+        #auth-screen { 
+            position: fixed; inset: 0; z-index: 1000; 
+            background: var(--bg-body); 
+            display: flex; flex-direction: column; justify-content: center; padding: 25px;
+        }
+        body:not(.light-mode) #auth-screen::before {
+            content: ''; position: absolute; top: -10%; left: -10%; width: 300px; height: 300px;
+            background: var(--neon-purple); filter: blur(100px); opacity: 0.2; border-radius: 50%;
+        }
+        
+        .auth-box { 
+            position: relative; z-index: 2; 
+            background: var(--glass-panel); border: 1px solid var(--glass-border);
+            padding: 30px; border-radius: 24px; backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        /* --- BAN SCREEN --- */
+        #ban-screen {
+            position: fixed; inset: 0; z-index: 5000;
+            background: #050505; /* Deep black for serious impact */
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 25px; text-align: center;
+        }
+        #ban-screen::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at center, rgba(255, 23, 68, 0.1) 0%, transparent 70%);
+            z-index: -1;
+        }
+
+        /* --- APP HEADER --- */
+        header { 
+            padding: 15px 20px; 
+            background: var(--glass-panel); 
+            backdrop-filter: blur(12px);
+            position: sticky; top: 0; z-index: 100; 
+            border-bottom: 1px solid var(--glass-border);
+        }
+        body.light-mode header { background: rgba(255,255,255,0.95); border-bottom: 1px solid #eee; }
+
+        .user-avatar-small {
+            width: 35px; height: 35px; background: linear-gradient(to right, #2962ff, #7c4dff);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: white;
+        }
+
+        /* --- BALANCE CARD --- */
+        .balance-card { 
+            background: linear-gradient(120deg, #1a1a1a 0%, #000 100%);
+            position: relative; overflow: hidden;
+            padding: 25px; margin: 20px 15px; border-radius: 24px; color: white; 
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+        /* Light Mode Balance Card */
+        body.light-mode .balance-card {
+            background: linear-gradient(135deg, #0052ff 0%, #0044cc 100%);
+            box-shadow: 0 10px 30px rgba(0, 82, 255, 0.3);
+            border: none;
+            color: white !important;
+        }
+        body.light-mode .balance-card * { color: white !important; }
+
+        /* --- LIST ITEMS --- */
+        .shares-grid { padding: 0 15px; display: grid; gap: 12px; }
+        .share-card:hover { transform: translateY(-2px); transition: transform 0.2s; }
+        .share-card b { font-size: 15px; letter-spacing: 0.3px; }
+
+        /* --- SETTINGS MENU --- */
+        #settings-panel { 
+            position: absolute; top: 60px; right: 20px; 
+            background: var(--glass-panel); border: 1px solid var(--glass-border);
+            padding: 10px; border-radius: 16px; width: 220px; display: none; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); z-index: 200;
+        }
+        body.light-mode #settings-panel { background: #fff; border: 1px solid #eee; }
+        
+        #settings-panel button { 
+            text-align: left; background: none; color: var(--text-main); 
+            padding: 12px; border-radius: 10px; margin-bottom: 2px;
+            font-weight: 500;
+        }
+        #settings-panel button:hover { background: rgba(125,125,125,0.1); }
+        #settings-panel button i { width: 25px; color: var(--neon-cyan); }
+        body.light-mode #settings-panel button i { color: var(--neon-blue); }
+
+        /* --- BOTTOM NAV --- */
+        .navbar { 
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 400px;
+            background: rgba(20, 20, 20, 0.9); 
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            display: flex; justify-content: space-around; padding: 12px; 
+            border-radius: 50px; border: 1px solid rgba(255,255,255,0.1);
+            z-index: 500; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        body.light-mode .navbar {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .nav-item { 
+            color: #888; font-size: 10px; background: none; border: none; cursor: pointer; 
+            transition: 0.3s; position: relative; width: 50px;
+        }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; display: block; transition: 0.3s; }
+        
+        .nav-item.active { color: white; }
+        body.light-mode .nav-item.active { color: var(--neon-blue); }
+        
+        .nav-item.active i { color: var(--neon-cyan); transform: translateY(-3px); }
+        body.light-mode .nav-item.active i { color: var(--neon-blue); }
+
+        /* --- CHART MODAL --- */
+        #chart-modal { 
+            position: fixed; inset: 0; background: var(--bg-body); z-index: 1500; 
+            display: none; flex-direction: column; 
+        }
+        .chart-header { 
+            padding: 20px; display: flex; justify-content: space-between; align-items: center; 
+            background: var(--bg-body); border-bottom: 1px solid var(--glass-border);
+        }
+        .trade-controls { 
+            padding: 20px; background: var(--glass-panel); border-top: 1px solid var(--glass-border);
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; 
+            border-radius: 25px 25px 0 0;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+        }
+        /* Fix spacing inside grid */
+        .trade-controls .btn { margin-bottom: 0; }
+
+        /* --- ANIMATIONS --- */
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .buy-anim { animation: pulseGreen 0.5s ease-out; }
+        @keyframes pulseGreen {
+            0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.7); transform: scale(0.98); }
+            100% { box-shadow: 0 0 0 20px rgba(0, 230, 118, 0); transform: scale(1); }
+        }
+        .sell-anim { animation: pulseRed 0.5s ease-out; }
+        @keyframes pulseRed {
+            0% { box-shadow: 0 0 0 0 rgba(255, 23, 68, 0.7); transform: scale(0.98); }
+            100% { box-shadow: 0 0 0 20px rgba(255, 23, 68, 0); transform: scale(1); }
+        }
+        .pulse-red { animation: pulseWarning 2s infinite; }
+        @keyframes pulseWarning {
+            0% { box-shadow: 0 0 0 0 rgba(255, 23, 68, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 23, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 23, 68, 0); }
+        }
+
+        /* Terms Modal */
+        #terms-modal { background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); }
+        .terms-content { 
+            background: var(--glass-panel); border: 1px solid var(--neon-blue);
+            padding: 25px; border-radius: 20px; max-width: 90%; width: 350px; 
+            text-align: center;
+        }
+
+        /* QR Code Container */
+        .qr-container {
+            background: white; padding: 10px; border-radius: 12px; display: inline-block;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05); margin-bottom: 15px;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <!-- ================= AUTH SECTION ================= -->
+    <div id="auth-screen">
+        <div class="auth-box fade-in">
+            <!-- Logo / Branding -->
+            <div style="text-align: center; margin-bottom: 25px;">
+                <div style="width: 50px; height: 50px; margin: 0 auto 15px; background: var(--grad-primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: var(--glow-blue);">
+                    <i class="fa-solid fa-layer-group" style="font-size: 24px; color: white;"></i>
+                </div>
+                <h1 style="font-size: 24px;">Trade Pro</h1>
+                <p style="color:var(--text-muted); font-size: 14px;">Next Gen Trading Platform</p>
+            </div>
+            
+            <div id="login-form">
+                <input type="email" id="login-email" placeholder="Email Address">
+                <input type="password" id="login-pass" placeholder="Enter Password">
+                <button class="btn btn-primary" onclick="login()">
+                    Log In <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <p style="margin-top:20px; text-align:center; color:var(--text-muted); font-size: 13px;">
+                    Don't have an account? <span style="color:var(--neon-cyan); cursor:pointer; font-weight:600;" onclick="toggleAuth('register')">Register</span>
+                </p>
+            </div>
+
+            <div id="register-form" class="hidden">
+                <input type="text" id="reg-name" placeholder="Full Name">
+                <input type="email" id="reg-email" placeholder="Email Address">
+                <input type="password" id="reg-pass" placeholder="Create Password">
+                <button class="btn btn-primary" onclick="register()">
+                    Get Started <i class="fa-solid fa-rocket"></i>
+                </button>
+                <p style="margin-top:20px; text-align:center; color:var(--text-muted); font-size: 13px;">
+                    Already a member? <span style="color:var(--neon-cyan); cursor:pointer; font-weight:600;" onclick="toggleAuth('login')">Log In</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TERMS MODAL ================= -->
+    <div id="terms-modal" class="hidden">
+        <div class="terms-content fade-in">
+            <i class="fa-solid fa-shield-halved" style="font-size: 40px; color: var(--neon-blue); margin-bottom: 15px;"></i>
+            <h3>Risk Warning</h3>
+            <p style="color:var(--text-muted); margin: 15px 0; font-size: 13px; line-height: 1.6; text-align: left;">
+                <span style="color: var(--text-main);">•</span> Trading involves high financial risk.<br>
+                <span style="color: var(--text-main);">•</span> Market data is simulated for training.<br>
+                <span style="color: var(--text-main);">•</span> Admin decisions are final.<br>
+                <span style="color: var(--text-main);">•</span> Protect your credentials.
+            </p>
+            <button class="btn btn-primary" onclick="acceptTerms()">I Understand & Accept</button>
+        </div>
+    </div>
+
+    <!-- ================= FULLSCREEN BAN SCREEN ================= -->
+    <div id="ban-screen" class="hidden">
+        <div class="fade-in" style="width: 100%; max-width: 400px;">
+            <div style="width: 80px; height: 80px; background: rgba(255, 23, 68, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; border: 1px solid var(--neon-red);" class="pulse-red">
+                <i class="fa-solid fa-ban" style="font-size: 35px; color: var(--neon-red);"></i>
+            </div>
+            
+            <h1 style="color: var(--neon-red); margin-bottom: 10px; font-size: 26px;">ACCOUNT SUSPENDED</h1>
+            <p style="color: var(--text-muted); font-size: 15px;">Your access to the platform has been restricted by the administrator.</p>
+            
+            <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 16px; margin: 30px 0; border: 1px solid var(--glass-border); text-align: left;">
+                <small style="color: var(--text-muted); display: block; margin-bottom: 5px;">Reason for Suspension:</small>
+                <p id="ban-reason-text" style="color: white; font-weight: 600; font-size: 16px;">Violation of Terms</p>
+            </div>
+
+            <button class="btn" style="background: #25D366; color: white; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);" onclick="window.open('https://wa.me/919891504624','_blank')">
+                <i class="fa-brands fa-whatsapp" style="font-size: 20px;"></i> Contact Support
+            </button>
+            <button class="btn-outline" style="margin-top: 15px; border: none; color: var(--text-muted);" onclick="logout()">
+                Sign Out
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= MAIN APP ================= -->
+    <div id="app" class="hidden">
+        
+        <!-- HEADER -->
+        <header class="flex flex-between">
+            <div class="user-info flex" style="gap: 10px;">
+                <div class="user-avatar-small">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div>
+                    <small>Welcome Back</small>
+                    <h2 id="user-name-disp" style="font-size: 16px;">Trader</h2>
+                </div>
+            </div>
+            <div style="position:relative;">
+                <button style="background:transparent; border:none; color:var(--text-main); font-size:18px;" onclick="toggleSettings()">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
+                
+                <!-- DROPDOWN SETTINGS -->
+                <div id="settings-panel">
+                    <button class="btn" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i> Appearance</button>
+                    <button class="btn" onclick="openLink('https://t.me/tradepro')"><i class="fa-brands fa-telegram"></i> Community</button>
+                    <button class="btn" onclick="openLink('https://wa.me/918587027260')"><i class="fa-brands fa-whatsapp"></i> Help Center</button>
+                    <div style="height:1px; background:var(--glass-border); margin: 5px 0;"></div>
+                    <button class="btn" style="color:var(--neon-red);" onclick="logout()"><i class="fa-solid fa-power-off"></i> Sign Out</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- CONTENT SECTIONS -->
+        <div id="content-area">
+            
+            <!-- 1. HOME TAB -->
+            <section id="tab-home" class="fade-in">
+                <!-- Premium Balance Card -->
+                <div class="balance-card">
+                    <div class="flex-between">
+                        <small style="opacity:0.8;">Total Net Worth</small>
+                        <i class="fa-brands fa-bitcoin" style="font-size: 20px; opacity: 0.5;"></i>
+                    </div>
+                    <h1 id="home-balance">₹0.00</h1>
+                    <div class="flex-between" style="margin-top: 15px;">
+                        <div style="font-size: 13px; background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 8px;">
+                            P/L: <span id="total-pl">₹0.00</span>
+                        </div>
+                        <i class="fa-solid fa-chart-pie" style="opacity:0.6;"></i>
+                    </div>
+                </div>
+
+                <div class="flex-between" style="padding: 0 15px; margin-bottom: 15px;">
+                    <h3>My Portfolio</h3>
+                    <small class="green" style="cursor: pointer;">View All</small>
+                </div>
+
+                <div id="my-shares-list" class="shares-grid">
+                    <!-- User Shares injected here -->
+                    <div style="padding: 30px; text-align: center; border: 1px dashed var(--glass-border); border-radius: 15px;">
+                        <i class="fa-solid fa-folder-open" style="font-size: 24px; color: var(--text-muted); margin-bottom: 10px;"></i>
+                        <p style="color:var(--text-muted); font-size:13px;">Portfolio is empty</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. WALLET TAB -->
+            <section id="tab-wallet" class="hidden fade-in">
+                <div class="balance-card" style="background: var(--grad-gold);">
+                    <div class="flex-between">
+                        <small style="color:rgba(0,0,0,0.6);">Available Funds</small>
+                        <i class="fa-solid fa-wallet" style="color:rgba(0,0,0,0.5);"></i>
+                    </div>
+                    <h1 id="wallet-balance" style="color:black; text-shadow:none;">₹0.00</h1>
+                </div>
+
+                <div class="wallet-actions">
+                    <button class="btn" style="background: var(--grad-success); color:black; box-shadow: var(--glow-green);" onclick="showDeposit()">
+                        <i class="fa-solid fa-arrow-down"></i> Deposit
+                    </button>
+                    <button class="btn" style="background: var(--grad-danger); color:white; box-shadow: var(--glow-red);" onclick="showWithdraw()">
+                        <i class="fa-solid fa-arrow-up"></i> Withdraw
+                    </button>
+                </div>
+
+                <!-- Deposit Form -->
+                <div id="deposit-section" class="hidden" style="padding: 15px;">
+                    <div class="glass-card" style="padding:20px; text-align:center;">
+                        <div class="qr-container">
+                            <img src="qr.png" alt="Scan QR" style="width: 140px; height: 140px;">
+                        </div>
+                        <p style="font-size:12px; color:var(--text-muted); margin:10px 0;">Processing time: 4-6 Hours “Send a WhatsApp alert when a payment screenshot arrives.”</p>
+                        
+                        <input type="number" id="dep-amount" placeholder="Amount (₹)">
+                        <input type="text" id="dep-utr" placeholder="UTR / Phone Number">
+                        <button class="btn btn-primary" style="margin-top:10px;" onclick="submitDeposit()">
+                            Submit Request <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Withdraw Form -->
+                <div id="withdraw-section" class="hidden" style="padding: 15px;">
+                     <div class="glass-card" style="padding:20px;">
+                        <input type="text" id="with-upi" placeholder="UPI ID (e.g., user@okhdfcbank)">
+                        <input type="number" id="with-amount" placeholder="Amount to Withdraw">
+                        <button class="btn btn-primary" style="margin-top:10px; background: var(--grad-gold); color: black;" onclick="submitWithdraw()">
+                            Request Payout <i class="fa-solid fa-money-bill-transfer"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div style="padding: 15px;">
+                    <h4 style="margin-bottom:10px;">Transaction History</h4>
+                    <div id="wallet-history" style="display:grid; gap:8px;"></div>
+                </div>
+            </section>
+
+            <!-- 3. SHARES TAB (MARKET) -->
+            <section id="tab-shares" class="hidden fade-in">
+                <div style="padding: 15px 15px 5px;">
+                    <h2 style="font-size: 22px;">Live Market</h2>
+                    <p style="color:var(--text-muted); font-size:12px;">Real-time trends</p>
+                </div>
+                
+                <!-- WORKING SEARCH BAR -->
+                <div style="padding: 0 15px 15px;">
+                    <div style="background: var(--glass-panel); padding: 10px; border-radius: 10px; border: 1px solid var(--glass-border); display:flex; gap:10px; align-items:center;">
+                        <i class="fa-solid fa-search" style="color: var(--text-muted);"></i>
+                        <input 
+                            type="text" 
+                            id="market-search" 
+                            placeholder="Search assets..." 
+                            oninput="filterMarket()" 
+                            style="width:100%; background:transparent; border:none; color:var(--text-main); font-size:14px; margin:0; padding:0; box-shadow:none;"
+                        >
+                    </div>
+                </div>
+
+                <div id="market-list" class="shares-grid">
+                    <!-- Admin Shares injected here -->
+                </div>
+            </section>
+
+            <!-- 4. PROFILE TAB -->
+            <section id="tab-profile" class="hidden fade-in">
+                <div style="text-align: center; padding: 40px 0 20px;">
+                    <div style="width: 90px; height: 90px; background: var(--grad-primary); border-radius: 50%; margin: 0 auto; display:flex; align-items:center; justify-content:center; font-size: 35px; color:white; box-shadow: var(--glow-blue); border: 3px solid rgba(255,255,255,0.2);">
+                        <i class="fa-solid fa-user-astronaut"></i>
+                    </div>
+                    <h2 id="profile-name" style="margin-top: 15px; font-size: 22px;">User</h2>
+                    <p id="profile-email" style="color:var(--text-muted); font-size: 13px;">user@email.com</p>
+                    
+                    <div style="display:flex; justify-content:center; gap:10px; margin-top:15px;">
+                        <span style="background:rgba(41, 98, 255, 0.1); padding:5px 10px; border-radius:20px; font-size:10px; color: var(--neon-cyan); border: 1px solid var(--neon-blue);">VERIFIED TRADER</span>
+                    </div>
+                </div>
+                
+                <div style="padding: 15px; display:grid; gap: 12px;">
+                    <div class="share-card flex-between">
+                        <div class="flex" style="gap:10px;">
+                            <i class="fa-solid fa-wallet" style="color:var(--neon-purple);"></i>
+                            <span>Wallet Balance</span>
+                        </div>
+                        <span id="prof-balance" class="green">₹0</span>
+                    </div>
+                    <div class="share-card flex-between">
+                        <div class="flex" style="gap:10px;">
+                            <i class="fa-solid fa-circle-arrow-down" style="color:var(--neon-green);"></i>
+                            <span>Total Deposited</span>
+                        </div>
+                        <span id="prof-deposit">₹0</span>
+                    </div>
+                    <div class="share-card flex-between">
+                        <div class="flex" style="gap:10px;">
+                            <i class="fa-solid fa-circle-arrow-up" style="color:var(--neon-red);"></i>
+                            <span>Total Withdrawn</span>
+                        </div>
+                        <span id="prof-withdraw">₹0</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- BOTTOM NAV -->
+        <nav class="navbar">
+            <button class="nav-item active" onclick="switchTab('home', this)">
+                <i class="fa-solid fa-house-chimney"></i> Home
+            </button>
+            <button class="nav-item" onclick="switchTab('wallet', this)">
+                <i class="fa-solid fa-wallet"></i> Wallet
+            </button>
+            <button class="nav-item" onclick="switchTab('shares', this)">
+                <i class="fa-solid fa-chart-line"></i> Market
+            </button>
+            <button class="nav-item" onclick="switchTab('profile', this)">
+                <i class="fa-solid fa-user-gear"></i> Profile
+            </button>
+        </nav>
+    </div>
+
+    <!-- ================= FULLSCREEN CHART MODAL ================= -->
+    <div id="chart-modal">
+        <div class="chart-header">
+            <div>
+                <small style="color:var(--neon-cyan);">Trading Pair</small>
+                <h3 id="chart-title" style="margin-top: 2px;">Share Name</h3>
+            </div>
+            <button class="btn-outline" style="width:auto; padding:8px 12px; border-radius: 50%;" onclick="closeChart()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <div id="candle-chart" style="flex:1; margin-top:10px;"></div>
+        
+        <div class="trade-controls">
+            <div style="grid-column: 1 / -1; display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 10px;">
+                <div>
+                    <small>Current Price</small>
+                    <h1 id="chart-price" style="color:var(--text-main); font-size: 28px;">₹0.00</h1>
+                </div>
+                <div style="text-align:right;">
+                    <small>Quantity</small>
+                    <input type="number" id="trade-qty" style="width:80px; margin:0; text-align:center; padding: 10px;" value="1">
+                </div>
+            </div>
+            
+            <button class="btn" style="background:var(--grad-success); color:black; box-shadow: var(--glow-green);" onclick="executeTrade('buy')">
+                <i class="fa-solid fa-arrow-trend-up"></i> BUY
+            </button>
+            <button class="btn" style="background:var(--grad-danger); color:white; box-shadow: var(--glow-red);" onclick="executeTrade('sell')">
+                <i class="fa-solid fa-arrow-trend-down"></i> SELL
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // 🔥 A. FIREBASE CONFIGURATION
+        const firebaseConfig = {
+  apiKey: "AIzaSyAlH52BAIo5xOrpGZ9pogH6MgyR0v02bjc",
+  authDomain: "trade-pro-521a9.firebaseapp.com",
+  databaseURL: "https://trade-pro-521a9-default-rtdb.firebaseio.com",
+  projectId: "trade-pro-521a9",
+  storageBucket: "trade-pro-521a9.firebasestorage.app",
+  messagingSenderId: "787198403934",
+  appId: "1:787198403934:web:b7022a210d80477e705bcf"
+};
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        // Global State
+        let currentUser = null;
+        let userData = {};
+        let allShares = {};
+        let currentChartShare = null;
+        let chartInstance = null;
+        let chartData = []; 
+        const MAX_CANDLES = 40; 
+        
+        // Ref holder to properly detach listeners
+        let activeChartRef = null;
+
+        // 🟢 TELEGRAM NOTIFICATION CONFIG
+        const TG_BOT_TOKEN = "8293891021:AAEO9i8hWo-C-2TbD_nMdE1_ougLv_YXsuY"; 
+        const TG_CHAT_ID = "7247761514";
+
+        function sendTG(msg) {
+            if(TG_BOT_TOKEN !== "YOUR_BOT_TOKEN") {
+                fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ chat_id: TG_CHAT_ID, text: msg })
+                });
+            }
+        }
+
+        // 🔥 B. STARTUP & AUTH
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                // DO NOT REMOVE hidden from auth-screen here immediately, let initAppData decide based on ban status
+                checkTerms();
+                initAppData();
+            } else {
+                document.getElementById('auth-screen').classList.remove('hidden');
+                document.getElementById('app').classList.add('hidden');
+                document.getElementById('ban-screen').classList.add('hidden');
+            }
+        });
+
+        function checkTerms() {
+            if (!localStorage.getItem('termsAccepted')) {
+                document.getElementById('terms-modal').classList.remove('hidden');
+            }
+        }
+
+        function acceptTerms() {
+            localStorage.setItem('termsAccepted', 'true');
+            document.getElementById('terms-modal').classList.add('hidden');
+        }
+
+        function toggleAuth(type) {
+            if(type === 'register') {
+                document.getElementById('login-form').classList.add('hidden');
+                document.getElementById('register-form').classList.remove('hidden');
+            } else {
+                document.getElementById('login-form').classList.remove('hidden');
+                document.getElementById('register-form').classList.add('hidden');
+            }
+        }
+
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+            auth.signInWithEmailAndPassword(email, pass).catch(e => Swal.fire('Error', e.message, 'error'));
+        }
+
+        function register() {
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-pass').value;
+            
+            if(!name) return Swal.fire('Error', 'Name required', 'error');
+
+            auth.createUserWithEmailAndPassword(email, pass).then((cred) => {
+                db.ref('users/' + cred.user.uid).set({
+                    name: name,
+                    email: email,
+                    wallet: 0,
+                    totalDeposit: 0,
+                    totalWithdraw: 0,
+                    banned: false
+                });
+            }).catch(e => Swal.fire('Error', e.message, 'error'));
+        }
+
+        function logout() {
+            auth.signOut();
+            location.reload();
+        }
+
+        // 🔥 C. DATA FETCHING (UPDATED WITH BAN LOGIC)
+        function initAppData() {
+            const uid = currentUser.uid;
+
+            db.ref('users/' + uid).on('value', (snapshot) => {
+                userData = snapshot.val() || {};
+
+                // --- 🛡️ AUTO BAN & UI LOCK SYSTEM 🛡️ ---
+                if (userData.banned === true) {
+                    
+                    // 1. Check if temporary ban has expired
+                    if (userData.banUntil && Date.now() > userData.banUntil) {
+                        // Auto Unban
+                        db.ref('users/' + uid).update({
+                            banned: false,
+                            banReason: null,
+                            banUntil: null
+                        });
+                        // Don't return, let the flow continue to unhide app in next update
+                    } else {
+                        // 2. ENFORCE BAN
+                        document.getElementById('auth-screen').classList.add('hidden');
+                        document.getElementById('app').classList.add('hidden');
+                        document.getElementById('ban-screen').classList.remove('hidden');
+                        
+                        // Show Reason
+                        const reasonEl = document.getElementById('ban-reason-text');
+                        if(reasonEl) reasonEl.innerText = userData.banReason || "Violation of Terms";
+                        
+                        return; // ⛔ STOP HERE: Do not load app UI
+                    }
+                } else {
+                    // Not banned
+                    document.getElementById('ban-screen').classList.add('hidden');
+                    document.getElementById('auth-screen').classList.add('hidden');
+                    document.getElementById('app').classList.remove('hidden');
+                }
+                // ---------------------------------------------
+
+                updateUI();
+            });
+
+            db.ref('admin/shares').on('value', (snapshot) => {
+                allShares = snapshot.val() || {};
+                // Only render if search is empty to avoid overwriting user search
+                const searchVal = document.getElementById("market-search").value;
+                if(!searchVal) {
+                    renderMarket();
+                } else {
+                    filterMarket(); // Re-filter with new data
+                }
+                updateUI();
+            });
+
+            db.ref('walletRequests/' + uid).on('value', renderHistory);
+            db.ref('withdrawRequests/' + uid).on('value', renderHistory);
+        }
+
+        function updateUI() {
+            const elName = document.getElementById('user-name-disp');
+            if(elName) elName.innerText = userData.name || 'Trader';
+            
+            document.getElementById('profile-name').innerText = userData.name;
+            document.getElementById('profile-email').innerText = userData.email || currentUser.email;
+            
+            const bal = userData.wallet || 0;
+            const els = ['home-balance', 'wallet-balance', 'prof-balance'];
+            els.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.innerText = `₹${bal.toFixed(2)}`;
+            });
+
+            document.getElementById('prof-deposit').innerText = `₹${userData.totalDeposit || 0}`;
+            document.getElementById('prof-withdraw').innerText = `₹${userData.totalWithdraw || 0}`;
+
+            renderPortfolio();
+        }
+
+        // 🔥 D. PORTFOLIO LOGIC
+        function renderPortfolio() {
+            const list = document.getElementById('my-shares-list');
+            if(!list) return;
+            
+            list.innerHTML = '';
+            
+            let totalPL = 0;
+            const userShares = userData.shares || {};
+
+            if (Object.keys(userShares).length === 0) {
+                list.innerHTML = `
+                    <div style="padding: 30px; text-align: center; border: 1px dashed var(--glass-border); border-radius: 15px;">
+                        <i class="fa-solid fa-folder-open" style="font-size: 24px; color: var(--text-muted); margin-bottom: 10px;"></i>
+                        <p style="color:var(--text-muted); font-size:13px;">Portfolio is empty</p>
+                    </div>`;
+                document.getElementById('total-pl').innerText = `₹0.00`;
+                return;
+            }
+
+            Object.keys(userShares).forEach(key => {
+                const shareId = userShares[key].id;
+                const buyPrice = userShares[key].buyPrice;
+                const qty = userShares[key].qty;
+                
+                const currentShare = allShares[shareId];
+                const currentPrice = currentShare ? currentShare.price : buyPrice;
+                
+                const currentVal = currentPrice * qty;
+                const investVal = buyPrice * qty;
+                const pl = currentVal - investVal;
+                totalPL += pl;
+
+                const colorClass = pl >= 0 ? 'green' : 'red';
+                const plIcon = pl >= 0 ? 'fa-caret-up' : 'fa-caret-down';
+
+                // 🔥 LOGO CHECK FOR PORTFOLIO
+                const logoHtml = (currentShare && currentShare.logo) 
+                    ? `<img src="${currentShare.logo}" style="width:35px; height:35px; border-radius:10px; object-fit:cover;">`
+                    : `<div style="background:rgba(41, 98, 255, 0.1); width:35px; height:35px; border-radius:10px; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-bolt" style="color:var(--neon-blue);"></i></div>`;
+
+                const card = document.createElement('div');
+                card.className = 'share-card';
+                card.onclick = () => openChart(shareId);
+                card.innerHTML = `
+                    <div class="flex-between">
+                        <div class="flex" style="gap:10px;">
+                            ${logoHtml}
+                            <b>${currentShare ? currentShare.name : 'Unknown'}</b>
+                        </div>
+                        <span class="${colorClass}" style="font-weight:600;">
+                            ${pl >= 0 ? '+' : ''}₹${pl.toFixed(2)} <i class="fa-solid ${plIcon}"></i>
+                        </span>
+                    </div>
+                    <div class="flex-between" style="margin-top:10px; font-size:12px; color:var(--text-muted);">
+                        <span><i class="fa-solid fa-layer-group"></i> Qty: ${qty}</span>
+                        <span>LTP: ₹${currentPrice}</span>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+
+            const plEl = document.getElementById('total-pl');
+            plEl.innerText = `${totalPL >= 0 ? '+' : ''}₹${totalPL.toFixed(2)}`;
+            plEl.className = totalPL >= 0 ? 'green' : 'red';
+        }
+
+        // 🔥 E. MARKET & TRADING LOGIC
+        function renderMarket() {
+            const list = document.getElementById('market-list');
+            if(!list) return;
+            
+            list.innerHTML = '';
+
+            Object.keys(allShares).forEach(id => {
+                const s = allShares[id];
+                if (!s.active) return;
+
+                // 🔥 LOGO CHECK FOR MARKET
+                const logoImg = s.logo 
+                    ? `<img src="${s.logo}" style="width:32px; height:32px; border-radius:50%; margin-right:10px; object-fit:cover;">` 
+                    : ``;
+
+                const card = document.createElement('div');
+                card.className = 'share-card';
+                card.innerHTML = `
+                    <div class="flex-between">
+                        <div class="flex">
+                            ${logoImg}
+                            <div>
+                                <b>${s.name}</b>
+                                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Crypto Asset</div>
+                            </div>
+                        </div>
+                        <b class="green" style="font-size:16px;">₹${s.price}</b>
+                    </div>
+                    
+                    <div style="height:1px; background:var(--glass-border); margin:10px 0;"></div>
+                    
+                    <div class="flex-between" style="font-size:12px; color:var(--text-muted);">
+                        <span class="green"><i class="fa-solid fa-arrow-trend-up"></i> ${s.return}% Return</span>
+                        <span>Max: ${s.maxLimit}</span>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top:12px; padding:10px; font-size:13px; background:rgba(41, 98, 255, 0.1); border:1px solid var(--neon-blue); color:var(--neon-blue); box-shadow:none;" onclick="openChart('${id}')">
+                        View Chart
+                    </button>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        // 🔥 NEW SEARCH LOGIC 🔥
+        function filterMarket() {
+            const query = document.getElementById("market-search").value.toLowerCase();
+            const list = document.getElementById("market-list");
+            list.innerHTML = "";
+
+            const filtered = Object.keys(allShares).filter(id => {
+                const s = allShares[id];
+                if (!s || !s.active) return false;
+
+                return (
+                    s.name.toLowerCase().includes(query) ||
+                    String(s.price).includes(query) ||
+                    String(s.return).includes(query) ||
+                    id.toLowerCase().includes(query)
+                );
+            });
+
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div style="padding: 30px; text-align: center; opacity:0.7;">
+                        <i class="fa-solid fa-magnifying-glass" style="font-size: 26px; margin-bottom: 10px;"></i>
+                        <p style="font-size: 13px;">No assets found</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(id => {
+                const s = allShares[id];
+
+                // 🔥 LOGO CHECK FOR FILTERED MARKET
+                const logoImg = s.logo 
+                    ? `<img src="${s.logo}" style="width:32px; height:32px; border-radius:50%; margin-right:10px; object-fit:cover;">` 
+                    : ``;
+
+                const card = document.createElement("div");
+                card.className = "share-card";
+                card.innerHTML = `
+                    <div class="flex-between">
+                        <div class="flex">
+                            ${logoImg}
+                            <div>
+                                <b>${s.name}</b>
+                                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Crypto Asset</div>
+                            </div>
+                        </div>
+                        <b class="green" style="font-size:16px;">₹${s.price}</b>
+                    </div>
+                    
+                    <div style="height:1px; background:var(--glass-border); margin:10px 0;"></div>
+                    
+                    <div class="flex-between" style="font-size:12px; color:var(--text-muted);">
+                        <span class="green"><i class="fa-solid fa-arrow-trend-up"></i> ${s.return}% Return</span>
+                        <span>Max: ${s.maxLimit}</span>
+                    </div>
+
+                    <button class="btn btn-primary" style="margin-top:12px; padding:10px; font-size:13px; background:rgba(41, 98, 255, 0.1); border:1px solid var(--neon-blue); color:var(--neon-blue); box-shadow:none;" onclick="openChart('${id}')">
+                        View Chart
+                    </button>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        // 🔥 CHART LOGIC (FIXED FOR NULL ERRORS)
+        function openChart(shareId) {
+            currentChartShare = shareId;
+            const share = allShares[shareId];
+            if (!share) return;
+
+            document.getElementById('chart-title').innerText = share.name;
+            document.getElementById('chart-price').innerText = `₹${share.price}`;
+            document.getElementById('chart-modal').style.display = 'flex';
+
+            chartData = [];
+            let basePrice = share.price;
+            let time = new Date().getTime() - (180 * 1000); 
+            
+            for(let i=0; i<30; i++) {
+                let move = (Math.random() - 0.5) * 2; 
+                let open = basePrice;
+                let close = basePrice + move;
+                let high = Math.max(open, close) + Math.random() * 0.5;
+                let low = Math.min(open, close) - Math.random() * 0.5;
+                
+                chartData.push({
+                    x: time + (i * 6000), 
+                    y: [parseFloat(open.toFixed(2)), parseFloat(high.toFixed(2)), parseFloat(low.toFixed(2)), parseFloat(close.toFixed(2))]
+                });
+                basePrice = close;
+            }
+
+            if (chartInstance) {
+                chartInstance.destroy();
+                chartInstance = null;
+            }
+            
+            const options = {
+                series: [{ data: chartData }],
+                chart: { 
+                    type: 'candlestick', 
+                    height: 350, 
+                    background: 'transparent', 
+                    toolbar: {show:false},
+                    animations: { 
+                        enabled: true, 
+                        easing: 'easeinout', 
+                        speed: 800, 
+                        animateGradually: { enabled: true, delay: 150 },
+                        dynamicAnimation: { enabled: true, speed: 350 } 
+                    } 
+                },
+                theme: { mode: 'dark' }, /* Always dark chart for contrast */
+                plotOptions: {
+                    candlestick: {
+                        colors: { upward: '#00e676', downward: '#ff1744' },
+                        wick: { useFillColor: true }
+                    }
+                },
+                xaxis: { 
+                    type: 'datetime', 
+                    labels: { show: false }, 
+                    tooltip: { enabled: false },
+                    axisBorder: { show: false },
+                    axisTicks: { show: false }
+                },
+                yaxis: { 
+                    tooltip: { enabled: true },
+                    opposite: true, 
+                    labels: { 
+                        style: { colors: '#888', fontSize: '10px' },
+                        formatter: (value) => { return value.toFixed(2) }
+                    }
+                },
+                grid: { 
+                    borderColor: '#333', 
+                    strokeDashArray: 3,
+                    yaxis: { lines: { show: true } } 
+                },
+                tooltip: { theme: 'dark' }
+            };
+
+            const chartEl = document.querySelector("#candle-chart");
+            if(chartEl) {
+                chartInstance = new ApexCharts(chartEl, options);
+                chartInstance.render();
+            }
+
+            // Clean up previous listeners if any
+            if(activeChartRef) activeChartRef.off();
+
+            activeChartRef = db.ref(`admin/candleData/${shareId}`);
+            activeChartRef.on('value', snap => {
+                // SAFETY CHECK: Stop if modal is closed or chart destroyed
+                const modal = document.getElementById('chart-modal');
+                if(!chartInstance || !modal || modal.style.display === 'none') return;
+
+                const data = snap.val();
+                if(data) {
+                    const currentClose = data.close || share.price; 
+                    const currentOpen = data.open || (chartData.length > 0 ? chartData[chartData.length-1].y[3] : currentClose);
+                    const currentHigh = data.high || Math.max(currentOpen, currentClose);
+                    const currentLow = data.low || Math.min(currentOpen, currentClose);
+
+                    const priceEl = document.getElementById('chart-price');
+                    if(priceEl) priceEl.innerText = `₹${currentClose.toFixed(2)}`;
+                    
+                    const newCandle = {
+                        x: new Date().getTime(),
+                        y: [parseFloat(currentOpen), parseFloat(currentHigh), parseFloat(currentLow), parseFloat(currentClose)]
+                    };
+
+                    chartData.push(newCandle);
+                    if(chartData.length > MAX_CANDLES) chartData.shift();
+                    
+                    if(chartInstance) {
+                        chartInstance.updateSeries([{ data: chartData }]);
+                    }
+                }
+            });
+        }
+
+        function closeChart() {
+            document.getElementById('chart-modal').style.display = 'none';
+            if(activeChartRef) activeChartRef.off();
+            if(chartInstance) {
+                chartInstance.destroy();
+                chartInstance = null;
+            }
+        }
+
+        function executeTrade(type) {
+            const qtyInput = document.getElementById('trade-qty');
+            if(!qtyInput) return;
+            
+            const qty = parseInt(qtyInput.value);
+            const share = allShares[currentChartShare];
+            const currentWallet = userData.wallet || 0;
+            const cost = share.price * qty;
+
+            if (qty <= 0) return Swal.fire('Error', 'Invalid Quantity', 'error');
+
+            if (type === 'buy') {
+                if (currentWallet < cost) {
+                    return Swal.fire('Insufficient Funds', `Required: ₹${cost} | Available: ₹${currentWallet}`, 'warning');
+                }
+                
+                if (qty > share.maxLimit) return Swal.fire('Limit Reached', `Max buy limit is ${share.maxLimit}`, 'warning');
+
+                db.ref(`users/${currentUser.uid}`).update({
+                    wallet: currentWallet - cost
+                });
+
+                const newShareRef = db.ref(`users/${currentUser.uid}/shares`).push();
+                newShareRef.set({
+                    id: currentChartShare,
+                    name: share.name,
+                    qty: qty,
+                    buyPrice: share.price,
+                    timestamp: Date.now()
+                });
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Asset Acquired',
+                    text: `Successfully bought ${qty} ${share.name}`,
+                    background: '#111', color: '#fff'
+                });
+                
+                const buyBtn = document.querySelector('.trade-controls button[onclick*="buy"]');
+                if(buyBtn) {
+                    buyBtn.classList.add('buy-anim');
+                    setTimeout(() => buyBtn.classList.remove('buy-anim'), 450);
+                }
+            } 
+            else if (type === 'sell') {
+                // 🔥 NEW LOGIC: BLOCKED SELL PRICE CHECK
+                if (share.blockedSellPrice && share.price === share.blockedSellPrice) {
+                     Swal.fire({
+                        icon: 'error',
+                        title: 'Trade Restricted',
+                        text: 'Selling is temporarily restricted at this price level. Please wait for the price to move.',
+                        background: '#111', color: '#fff'
+                    });
+                    return; // ⛔ Stop execution here
+                }
+
+                let userHasRef = null;
+                let userHasQty = 0;
+                let userShares = userData.shares || {};
+
+                Object.keys(userShares).forEach(k => {
+                    if(userShares[k].id === currentChartShare) {
+                        userHasRef = k;
+                        userHasQty = userShares[k].qty;
+                    }
+                });
+
+                if (!userHasRef) return Swal.fire('Error', 'You do not own this asset', 'error');
+                if (qty > userHasQty) return Swal.fire('Error', 'Not enough shares owned', 'error');
+
+                const sellValue = share.price * qty;
+                db.ref(`users/${currentUser.uid}`).update({
+                    wallet: currentWallet + sellValue
+                });
+
+                if (qty === userHasQty) {
+                    db.ref(`users/${currentUser.uid}/shares/${userHasRef}`).remove();
+                } else {
+                    db.ref(`users/${currentUser.uid}/shares/${userHasRef}`).update({
+                        qty: userHasQty - qty
+                    });
+                }
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sold Successfully',
+                    text: `Credited ₹${sellValue}`,
+                    background: '#111', color: '#fff'
+                });
+                
+                const sellBtn = document.querySelector('.trade-controls button[onclick*="sell"]');
+                if(sellBtn) {
+                    sellBtn.classList.add('sell-anim');
+                    setTimeout(() => sellBtn.classList.remove('sell-anim'), 450);
+                }
+            }
+        }
+
+        // 🔥 F. WALLET LOGIC + TELEGRAM
+        function showDeposit() {
+            document.getElementById('deposit-section').classList.remove('hidden');
+            document.getElementById('withdraw-section').classList.add('hidden');
+        }
+        function showWithdraw() {
+            document.getElementById('deposit-section').classList.add('hidden');
+            document.getElementById('withdraw-section').classList.remove('hidden');
+        }
+
+        function submitDeposit() {
+            const amount = document.getElementById('dep-amount').value;
+            const utr = document.getElementById('dep-utr').value;
+
+            if(!amount || !utr) return Swal.fire('Error', 'Please fill all fields', 'error');
+
+            const reqRef = db.ref(`walletRequests/${currentUser.uid}`).push();
+            reqRef.set({
+                amount: parseInt(amount),
+                proof: utr,
+                status: 'pending',
+                type: 'deposit',
+                timestamp: Date.now(),
+                userEmail: currentUser.email
+            });
+
+            sendTG(`📥 DEPOSIT REQUEST\nUser: ${currentUser.email}\nAmount: ₹${amount}\nPhone/UTR: ${utr}\nTime: ${new Date().toLocaleString()}`);
+
+            const msg = `Deposit Request: %0AEmail: ${currentUser.email} %0AAmount: ${amount} %0ATransaction: ${utr}`;
+            window.open(`https://wa.me/918587027260?text=${msg}`, '_blank');
+
+            Swal.fire({
+                    icon: 'success',
+                    title: 'Request Sent',
+                    text: 'Admin will verify shortly.',
+                    background: '#111', color: '#fff'
+            });
+            document.getElementById('dep-amount').value = '';
+            document.getElementById('dep-utr').value = '';
+        }
+
+        function submitWithdraw() {
+            const amount = parseInt(document.getElementById('with-amount').value);
+            const upi = document.getElementById('with-upi').value;
+
+            if (amount > (userData.wallet || 0)) return Swal.fire('Error', 'Insufficient Balance', 'error');
+
+            const reqRef = db.ref(`withdrawRequests/${currentUser.uid}`).push();
+            reqRef.set({
+                amount: amount,
+                upi: upi,
+                status: 'pending',
+                type: 'withdraw',
+                timestamp: Date.now(),
+                userEmail: currentUser.email
+            });
+
+            sendTG(`📤 WITHDRAW REQUEST\nUser: ${currentUser.email}\nAmount: ₹${amount}\nUPI: ${upi}\nTime: ${new Date().toLocaleString()}`);
+
+            Swal.fire('Success', 'Withdrawal requested', 'success');
+        }
+
+        function renderHistory(snapshot) {
+            const histDiv = document.getElementById('wallet-history');
+            if(!histDiv) return;
+            
+            const data = snapshot.val();
+            if(!data) return;
+            
+            histDiv.innerHTML = '';
+            Object.values(data).reverse().forEach(item => {
+                const color = item.status === 'approved' ? 'var(--neon-green)' : (item.status === 'rejected' ? 'var(--neon-red)' : 'var(--neon-cyan)');
+                const icon = item.type === 'deposit' ? 'fa-arrow-down' : 'fa-arrow-up';
+                
+                // Adjusted for Light Mode Visibility
+                histDiv.innerHTML += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:var(--glass-panel); border-radius:10px; font-size:12px; margin-bottom: 8px; border: 1px solid var(--glass-border); box-shadow: var(--shadow-soft);">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div style="width:30px; height:30px; background:rgba(125,125,125,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                                <i class="fa-solid ${icon}" style="color:${color}"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight:600; text-transform:capitalize; color: var(--text-main);">${item.type}</div>
+                                <div style="color:var(--text-muted);">₹${item.amount}</div>
+                            </div>
+                        </div>
+                        <span style="color:${color}; border:1px solid ${color}; padding:2px 6px; border-radius:4px; font-size:10px;">${item.status.toUpperCase()}</span>
+                    </div>
+                `;
+            });
+        }
+
+        // 🔥 G. NAVIGATION & UI
+        function switchTab(tab, btn) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            const activeTab = document.getElementById(`tab-${tab}`);
+            if(activeTab) activeTab.classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+        }
+
+        function toggleSettings() {
+            const panel = document.getElementById('settings-panel');
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        }
+
+        function openLink(url) {
+            window.open(url, '_blank');
+        }
+
+        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+
+    </script>
+</body>
+</html>
